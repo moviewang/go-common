@@ -3,13 +3,21 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"math"
+	"os"
 )
 
 type Msg struct {
 	Name string
 	Body string
 	Time int64
+}
+
+type FamilyMember struct {
+	Name string
+	Age int
+	Parent []string
 }
 
 func main()  {
@@ -44,6 +52,33 @@ func main()  {
 		fmt.Println(err1)
 	}
 	fmt.Println(mm)
+
+	//reference type
+	var fm FamilyMember
+	json.Unmarshal(marshal, &fm)
+	fmt.Println(fm)
+
+	//stream
+	decoder := json.NewDecoder(os.Stdin)
+	encoder := json.NewEncoder(os.Stdout)
+	for ; ; {
+		var v map[string] interface{}
+		err := decoder.Decode(&v)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		for k := range v {
+			if k != "Name" {
+				delete(v, k)
+			}
+
+		}
+		if err := encoder.Encode(&v); err != nil {
+			log.Println(err)
+		}
+	}
 }
 
 
