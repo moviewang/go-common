@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"math"
+	"math/rand"
+	"time"
 )
 
 type Book struct {
@@ -40,7 +43,6 @@ func (HUaWei) call(p string) string {
 }
 
 type Xiaomi struct {
-	
 }
 
 func (Xiaomi) call(p string) string {
@@ -61,7 +63,7 @@ func (de *DivError) Error() string {
 	return fmt.Sprintf(str, de.dividee)
 }
 
-func Divide(x, y int) (result int, err string){
+func Divide(x, y int) (result int, err string) {
 	if y == 0 {
 		divError := DivError{x, y}
 		err = divError.Error()
@@ -70,6 +72,12 @@ func Divide(x, y int) (result int, err string){
 	return x / y, ""
 }
 
+//naked return, returns the return named return values
+func split(sum int) (x, y int) {
+	x = sum * 4 / 7
+	y = sum - x
+	return
+}
 
 func main() {
 	book := Book{"java", "Gaosinlin", 1}
@@ -150,4 +158,85 @@ func main() {
 	} else {
 		fmt.Println(result)
 	}
+
+	rand.Seed(10)
+	rn := rand.Int()
+	fmt.Println(rn)
+	fmt.Println(split(17))
+
+	sum := 1
+	for ; sum < 100; {
+		sum += sum
+	}
+	fmt.Println("sum:", sum)
+
+	f := pow(3, 2, 10)
+	i := pow(3, 3, 20)
+	fmt.Println(f, i)
+	fmt.Println(Sqrt(2))
+	fmt.Println(math.Sqrt(2))
+
+	fmt.Println("When is Saturday ?")
+	today := time.Now().Weekday()
+	switch time.Saturday {
+	case today + 0:
+		fmt.Println("today")
+	case today + 1:
+		fmt.Println("tommorrow")
+	case today + 2:
+		fmt.Println("in tow days")
+	default:
+		fmt.Println("too far away")
+	}
+
+	now := time.Now()
+	switch  {
+	case now.Hour() < 12:
+		fmt.Println("Good morning")
+	case now.Hour() < 17:
+		fmt.Println("Good afternoon")
+	default:
+		fmt.Println("Good evening")
+	}
+
+	//defers the execution of a function until the surrounding function returns
+	defer fmt.Println("world")
+	fmt.Println("hello")
+
+	//deferd function calls are pushed onto stack
+	fmt.Println("counting")
+	for i := 0; i < 10 ; i++  {
+		defer fmt.Println(i)
+	}
+	fmt.Println("done")
+
+	//pointer
+	h, j := 42, 2701
+	var p *int
+	p = &h
+	fmt.Println(*p)
+	*p = 2
+	fmt.Println(*p)
+	p = &j
+	fmt.Println(*p)
+	*p = *p / 37
+	fmt.Println(*p)
+
+}
+
+func pow(x, n, lim float64) float64 {
+	if v := math.Pow(x, n); v < lim {
+		return v
+	} else {
+		fmt.Printf("%g>=%g\n", v, lim)
+	}
+	return lim
+}
+
+func Sqrt(x float64) float64 {
+	z := 1.0
+	for i := 0; i < 10; i++ {
+		z -= (z*z - x) / (2 * z)
+	}
+	return z
 }
